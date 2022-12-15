@@ -26,11 +26,17 @@ struct ContentView: View {
                 let seconHandLength = radius * 1.1
                 let secondHandWidth = radius / 25
                 
-                context.stroke(Circle().inset(by: borderThickness / 2).path(in: drawRect), with: .color(.primary), lineWidth: borderThickness)
+                context.stroke(Circle()
+                    .inset(by: borderThickness / 2)
+                    .path(in: drawRect),
+                               with: .color(.primary),
+                               lineWidth: borderThickness
+                )
                 context.translateBy(x: drawRect.midX, y: drawRect.midY)
                 
                 drawHand(in: context, radius: radius, length: minuteHandLength, angle: clock.minute)
                 drawHand(in: context, radius: radius, length: hourHandLength, angle: clock.hour)
+                drawHours(in: context, radius: radius)
             }
         }
     }
@@ -43,6 +49,24 @@ struct ContentView: View {
         
         let hand = Capsule().offset(x: 0, y: radius / 5).rotation(angle, anchor: .top).path(in: CGRect(x: -width, y: 0, width: width * 2, height: length))
         context.fill(hand, with: .color(.primary))
+    }
+    
+    func drawHours(in context: GraphicsContext, radius: Double) {
+        let textSpace = CGSize(width: 200, height: 200)
+        let textSize = radius / 4
+        let textOffset = radius * 0.75
+        
+        for i in 1...12 {
+            var contextCopy = context
+            let text = Text(String(i)).font(.system(size: textSize)).bold()
+            let resolvedText = contextCopy.resolve(text)
+
+            let textSize = resolvedText.measure(in: textSpace)
+            contextCopy.translateBy(x: -textSize.width / 2, y: -textSize.height / 2)
+            let point = CGPoint(x: 0, y: -textOffset).applying(CGAffineTransform(rotationAngle: Double(i) * .pi / 6))
+            contextCopy.draw(resolvedText, in: CGRect(origin: point, size: textSpace))
+            
+        }
     }
 }
 

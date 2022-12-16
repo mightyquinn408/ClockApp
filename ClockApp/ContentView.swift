@@ -9,10 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
+        let frameSize: CGFloat = 300
         ZStack {
             ForEach(0..<60) { tick in
                 self.tick(at: tick)
-                    .frame(width: 300, height: 300)
+                    .frame(width: frameSize - 10, height: frameSize - 10)
             }
             
             TimelineView(.animation(minimumInterval: 1 / 20)) { timeline in
@@ -57,8 +58,9 @@ struct ContentView: View {
                     context.stroke(centerPiece, with: .color(.orange), lineWidth: centerSize)
                 }
             }
-                .frame(width: 310, height: 310)
+                
         }
+        .frame(width: frameSize, height: frameSize)
     }
     
     func tick(at tick: Int) -> some View {

@@ -15,7 +15,7 @@ struct ContentView: View {
                     .frame(width: 300, height: 300)
             }
             
-            TimelineView(.animation) { timeline in
+            TimelineView(.animation(minimumInterval: 1 / 20)) { timeline in
                 Canvas { context, size in
                     let clock = ClockAngles(for: timeline.date)
                     
@@ -40,14 +40,16 @@ struct ContentView: View {
                     )
                     context.translateBy(x: drawRect.midX, y: drawRect.midY)
                     
+                    drawHours(in: context, radius: radius)
                     drawHand(in: context, radius: radius, length: minuteHandLength, angle: clock.minute)
                     drawHand(in: context, radius: radius, length: hourHandLength, angle: clock.hour)
-                    drawHours(in: context, radius: radius)
                     
                     let rect = CGRect(x: -innerBlackRingSize / 2, y: -innerBlackRingSize / 2, width: innerBlackRingSize, height: innerBlackRingSize)
                     context.stroke(Circle().path(in: rect), with: .color(.primary), lineWidth: centerSize)
+                    
                     let secondLine = Capsule().offset(x: 0, y: -radius / 6).rotation(clock.second, anchor: .top).path(in: CGRect(x: -secondHandWidth / 2, y: 0, width: secondHandWidth, height: secondHandLength))
                     context.fill(secondLine, with: .color(.orange))
+                    
                     let centerPiece = Circle().path(in: rect.insetBy(dx: centerSize, dy: centerSize))
                     context.blendMode = .clear
                     context.fill(centerPiece, with: .color(.white))
@@ -55,7 +57,7 @@ struct ContentView: View {
                     context.stroke(centerPiece, with: .color(.orange), lineWidth: centerSize)
                 }
             }
-            .frame(width: 310, height: 310)
+                .frame(width: 310, height: 310)
         }
     }
     
@@ -66,7 +68,8 @@ struct ContentView: View {
                 .opacity(tick % 5 == 0 ? 1 : 0.4)
                 .frame(width: 2, height: tick % 5 == 0 ? 15 : 7)
             Spacer()
-        }.rotationEffect(Angle.degrees(Double(tick)/(60) * 360))
+        }
+        .rotationEffect(Angle.degrees(Double(tick)/(60) * 360))
     }
     
     func drawHand(in context: GraphicsContext, radius: Double, length: Double, angle: Angle) {
@@ -93,7 +96,6 @@ struct ContentView: View {
             contextCopy.translateBy(x: -textSize.width / 2, y: -textSize.height / 2)
             let point = CGPoint(x: 0, y: -textOffset).applying(CGAffineTransform(rotationAngle: Double(i) * .pi / 6))
             contextCopy.draw(resolvedText, in: CGRect(origin: point, size: textSpace))
-            
         }
     }
 }

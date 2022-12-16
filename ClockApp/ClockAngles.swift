@@ -24,5 +24,8 @@ struct ClockAngles {
         minute = .degrees(6 * (minuteComponent + secondComponent / 60) + 180)
         second = .degrees(6 * (secondComponent + nanosecondComponent / 1_000_000_000) + 180)
         
+        if (hour.radians == .pi) { hour = .radians(3.141) }
+        if (minute.radians == .pi) { minute = .radians(3.141) }
+        if (second.radians == .pi) { second = .radians(3.141) }
     }
 }
